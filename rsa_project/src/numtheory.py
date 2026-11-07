@@ -13,24 +13,45 @@ class NoModularInverseError(ValueError):
 def gcd(a: int, b: int) -> int:
     """Thuật toán Euclid. Trả về ước chung lớn nhất không âm.
     Cần xử lý: số 0, số âm."""
-    raise NotImplementedError
+    while b != 0:
+        a, b = b, a % b
+    return abs(a)
+    # raise NotImplementedError
 
 
 def egcd(a: int, b: int) -> tuple[int, int, int]:
     """Euclid mở rộng. Trả về (g, x, y) sao cho a*x + b*y = g = gcd(a, b)."""
-    raise NotImplementedError
+    old_r, r = a, b      # số dư: dòng trước, dòng hiện tại
+    old_x, x = 1, 0      # hệ số của a
+    old_y, y = 0, 1      # hệ số của b
+    while r != 0:
+        q = old_r // r
+        old_r, r = r, old_r - q * r
+        old_x, x = x, old_x - q * x
+        old_y, y = y, old_y - q * y
+    if old_r < 0:        # chuẩn hóa để g không âm (khi đầu vào có số âm)
+        return -old_r, -old_x, -old_y
+    return old_r, old_x, old_y
+    # raise NotImplementedError
 
 
 def egcd_trace(a: int, b: int) -> list[dict]:
     """Euclid mở rộng có ghi vết. Mỗi dòng: {'a','b','q','r','x','y'}.
     Dùng cho bảng bước (results/euclid_trace.csv)."""
+
     raise NotImplementedError
 
 
 def modinv(a: int, n: int) -> int:
     """Nghịch đảo của a modulo n, kết quả trong [0, n).
     Ném NoModularInverseError nếu gcd(a, n) != 1. Ném ValueError nếu n <= 1."""
-    raise NotImplementedError
+    if gcd(a, n) != 1:
+        g, x, y = egcd(a, n)
+        raise ValueError(f"Modulo phải lớn hơn 1, nhận được n = {n}")
+    else:
+        g, x, y = egcd(a,n)
+        return x % n
+    # raise NotImplementedError
 
 
 def is_prime(n: int) -> bool:
